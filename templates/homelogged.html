@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Movie Cinema</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Auto Complete -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/css/autoComplete.min.css">
+
+  <!-- External CSS -->
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+
+  <script type="text/javascript">
+    var films = {{suggestions|tojson}};
+    $(document).ready(function(){
+      $("#myModal").modal('show');
+    });
+  </script>
+
+  <style>
+    :root {
+      --primary-red: #e50914;
+      --dark-bg: #141414;
+      --card-bg: #1f1f1f;
+      --hover-bg: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(229, 9, 20, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(229, 9, 20, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(229, 9, 20, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulse 15s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    #content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .body-content {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ml-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    /* GitHub Corner Animation */
+    .octo-arm {
+      transform-origin: 130px 106px;
+    }
+
+    svg:hover .octo-arm {
+      animation: octocat-wave 560ms ease-in-out;
+    }
+
+    @keyframes octocat-wave {
+      0%, 100% {
+        transform: rotate(0);
+      }
+      20%, 60% {
+        transform: rotate(-25deg);
+      }
+      40%, 80% {
+        transform: rotate(10deg);
+      }
+    }
+
+    /* Header Section */
+    .app-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #e50914 0%, #ff4444 50%, #ff6b6b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+      text-shadow: 0 0 40px rgba(229, 9, 20, 0.3);
+      position: relative;
+    }
+
+    @keyframes titleGlow {
+      from {
+        filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.4));
+      }
+      to {
+        filter: drop-shadow(0 0 40px rgba(229, 9, 20, 0.8));
+      }
+    }
+
+    .app-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+      border-radius: 2px;
+    }
+
+    /* Top Buttons */
+    .top-buttons {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      gap: 15px;
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .logout-btn,
+    .manage-user-btn {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #cc0000 100%);
+      color: #fff;
+      border: 2px solid var(--primary-red);
+      width: 140px;
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 5px 20px rgba(229, 9, 20, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-btn::before,
+    .manage-user-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .logout-btn:hover::before,
+    .manage-user-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .logout-btn:hover,
+    .manage-user-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(229, 9, 20, 0.5);
+      border-color: #ff4444;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+      border-color: #dc143c;
+    }
+
+    /* Welcome Message */
+    h1[style*="font-size: 24px"] {
+      font-size: 1.8rem !important;
+      color: #ffffff !important;
+      text-align: center;
+      margin: 30px 0 !important;
+      font-weight: 300;
+      letter-spacing: 1px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Search Section */
+    .shadow-textarea {
+      margin-top: 50px !important;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .movie.form-control {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border: 3px solid rgba(229, 9, 20, 0.3) !important;
+      border-radius: 50px !important;
+      padding: 20px 30px !important;
+      font-size: 1.1rem !important;
+      color: #181818 !important;
+      width: 70% !important;
+      max-width: 700px !important;
+      margin: 0 auto !important;
+      display: block !important;
+      transition: all 0.4s ease !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .movie.form-control:focus {
+      outline: none !important;
+      border-color: var(--primary-red) !important;
+      box-shadow: 0 0 0 5px rgba(229, 9, 20, 0.2), 0 15px 50px rgba(229, 9, 20, 0.3) !important;
+      transform: translateY(-2px) scale(1.02) !important;
+      background: #ffffff !important;
+    }
+
+    .movie.form-control::placeholder {
+      color: #999 !important;
+      font-weight: 400;
+    }
+
+    /* Enter Button */
+    .movie-button {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #cc0000 100%) !important;
+      border: 2px solid var(--primary-red) !important;
+      border-radius: 30px !important;
+      width: 150px !important;
+      padding: 14px 30px !important;
+      font-weight: bold !important;
+      font-size: 1rem !important;
+      letter-spacing: 2px !important;
+      text-transform: uppercase !important;
+      margin: 30px auto !important;
+      display: block !important;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+      box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4) !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .movie-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .movie-button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .movie-button:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.08) !important;
+      box-shadow: 0 12px 35px rgba(229, 9, 20, 0.6) !important;
+      border-color: #ff4444 !important;
+    }
+
+    .movie-button:active:not(:disabled) {
+      transform: translateY(-1px) scale(1.05) !important;
+    }
+
+    .movie-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Loader */
+    #loader {
+      margin: 50px 0;
+    }
+
+    /* Fail Message */
+    .fail {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: rgba(220, 20, 60, 0.1);
+      border: 2px solid rgba(220, 20, 60, 0.3);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      display: none;
+    }
+
+    .fail h3 {
+      color: #ffffff;
+      text-align: center;
+      font-size: 1.3rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    /* Results */
+    .results {
+      text-align: center;
+      margin: 50px 0;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    #name {
+      font-size: 3rem;
+      color: var(--text-primary);
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      border: 2px solid rgba(229, 9, 20, 0.3);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #cc0000 100%) !important;
+      color: white !important;
+      border-bottom: none !important;
+      padding: 25px 30px !important;
+    }
+
+    .modal-title {
+      font-weight: bold;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .modal-body {
+      padding: 30px !important;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .modal-footer {
+      border-top: 1px solid rgba(229, 9, 20, 0.2) !important;
+      padding: 20px 30px !important;
+      justify-content: center !important;
+    }
+
+    .modal-footer .btn-secondary {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #cc0000 100%) !important;
+      border: 2px solid var(--primary-red) !important;
+      padding: 12px 35px !important;
+      border-radius: 30px !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      letter-spacing: 1px !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4) !important;
+    }
+
+    .modal-footer .btn-secondary:hover {
+      transform: scale(1.05) !important;
+      box-shadow: 0 8px 30px rgba(229, 9, 20, 0.6) !important;
+    }
+
+    /* Footer */
+    .footer {
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px 0;
+      text-align: center;
+      border-top: 2px solid rgba(229, 9, 20, 0.2);
+      margin-top: auto;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+
+    .social-icons {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: rgba(229, 9, 20, 0.1);
+      border: 2px solid rgba(229, 9, 20, 0.3);
+      border-radius: 50%;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .social-icons:hover {
+      background: var(--primary-red);
+      border-color: var(--primary-red);
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 10px 25px rgba(229, 9, 20, 0.4);
+    }
+
+    .social-icons i {
+      color: #e4e0e0 !important;
+      font-size: 22px !important;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons:hover i {
+      color: #ffffff !important;
+      transform: scale(1.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .app-title {
+        font-size: 2.5rem;
+      }
+
+      .top-buttons {
+        top: 15px;
+        right: 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .logout-btn,
+      .manage-user-btn {
+        width: 120px;
+        padding: 10px 15px;
+        font-size: 0.75rem;
+      }
+
+      .movie.form-control {
+        width: 90% !important;
+        padding: 15px 25px !important;
+        font-size: 1rem !important;
+      }
+
+      .movie-button {
+        width: 130px !important;
+        padding: 12px 25px !important;
+      }
+
+      h1[style*="font-size: 24px"] {
+        font-size: 1.3rem !important;
+      }
+
+      .social {
+        gap: 15px;
+      }
+
+      .social-icons {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+      }
+
+      svg {
+        width: 60px !important;
+        height: 60px !important;
+      }
+    }
+  </style>
+
+</head>
+
+<body id="content" style="font-family: 'Noto Sans JP', sans-serif;">
+<div class="body-content">
+	<div class="ml-container" style="display: block;">
+
+		    
+
+    <h1 class="app-title">The Movie Cinema</h1>
+        <div class="top-buttons" style="position: absolute; top: 20px; right: 20px;">
+                <a href="/manage-user" class="btn btn-primary manage-user-btn">User details</a>
+                <a href="/logout" class="btn btn-primary logout-btn">Logout</a>
+        </div>
+
+        <h1 style="font-size: 24px; color: #CD6C89;">Welcome, {{ session['username'] }}!</h1>
+
+    <div class="form-group shadow-textarea" style="margin-top: 30px;text-align: center;color: white;">
+        <input type="text" name="movie" class="movie form-control" id="autoComplete" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+        <br>
+    </div>
+
+    <div class="form-group" style="text-align: center;">
+      <button class="btn btn-primary btn-block movie-button" style="background-color: #e50914;text-align: center;border-color: #e50914;width:120px;" disabled="" >Enter</button><br><br>
+    </div>
+	</div>
+
+  <div id="loader" class="text-center">
+  </div>
+
+  <div class="fail">
+    <h3>Sorry! The movie you requested is not in our database.
+    Please check the spelling or try with other movies!</h3>
+  </div>
+
+	<div class="results">
+
+      <h2 id="name" class="text-uppercase"></h2>
+
+	</div>
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #e50914;color: white;">
+          <h5 class="modal-title" id="exampleModalLabel3">Hey there!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" style="color: white">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>If you can't find the movie you're searching for through auto-suggestions while typing, there's no need to worry. Simply type the name of the movie and press "enter". Even if you make some typos, it should still work fine.</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Let's go!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+	<footer class="footer">
+    <br/>
+    <div class="social" style="margin-bottom: 8px">
+    <a class="social-icons" href="" target="_blank"><i class="fa fa-github-alt" style="font-size:24px;color: #e4e0e0"></i></a>
+    <a class="social-icons" href="" target="_blank"><i class="fa fa-linkedin-square" style="font-size:24px;color: #e4e0e0"></i></a>
+    <a class="social-icons" href="" target="_blank"><i class="fa fa-quora" style="font-size:24px;color: #e4e0e0"></i></a>
+    <a class="social-icons" href="" target="_blank"><i class="fa fa-instagram" style="font-size:24px;color: #e4e0e0"></i></a>
+    <a class="social-icons" href="" target="_blank"><i class="fa fa-twitter" style="font-size:24px;color: #e4e0e0"></i></a>
+  </div>
+  </footer>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='autocomplete.js')}}"></script>
+
+  <script type="text/javascript" src="{{url_for('static', filename='recommend.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>
